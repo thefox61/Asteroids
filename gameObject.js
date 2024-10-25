@@ -6,24 +6,30 @@ export class staticGameObject
     mesh;
     position;
     rotation;
+    scale;
 
     constructor()
     {
         this.mesh = new mesh();
+        this.scale = vec3.create();
     }
 }
 
 export class dynamicGameObject
 {
     mesh;
+    
     position;
     rotation;
+    scale;
+
     physics;
     collision;
 
     constructor()
     {
         this.mesh = new mesh();
+        this.scale = vec3.create();
     }
 }
 

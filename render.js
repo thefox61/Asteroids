@@ -275,6 +275,11 @@ export class renderer
             [0,0,1],
         ); 
 
+        mat4.scale( 
+            modelViewMatrix, 
+            modelViewMatrix, 
+            gameObject.scale,);
+
         this.gl.useProgram(this.shaderProgram);
 
         this.gl.uniformMatrix4fv(
