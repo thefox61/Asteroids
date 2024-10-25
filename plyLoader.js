@@ -77,6 +77,7 @@ export async function loadPLY(filename)
         if(splitIndex.length != 4)
         {
             console.log("error loading ply file -- index not expected length")
+            console.log(splitIndex.length);
             return;
         }
 

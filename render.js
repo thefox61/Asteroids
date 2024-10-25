@@ -5,10 +5,20 @@ export class renderer
 {
     shaderProgram;
     gl;
+    cameraPosition;
+    cameraTarget;
+    upDirection;
 
     constructor()
     {
+        this.cameraPosition = vec3.create();
+        vec3.fromValues(this.cameraPosition, 0.0, 0.0, 10.0);
+        
+        this.cameraTarget = vec3.create();
+        vec3.fromValues(this.cameraTarget, 0.0, 0.0, 0.0);
 
+        this.upDirection = vec3.create();
+        vec3.fromValues(this.upDirection, 0.0, 1.0, 0.0);
     }
 
     initRender(vsShader, fsShader)
@@ -231,11 +241,15 @@ export class renderer
         // as the destination to receive the result.
         mat4.perspective(projectionMatrix, fieldOfView, aspect, zNear, zFar);
 
-        this.renderObject(gameObjects, projectionMatrix);
+        const viewMatrix = mat4.create();
+
+        mat4.lookAt(viewMatrix, this.cameraPosition, this.cameraTarget, this.upDirection);
+
+        this.renderObject(gameObjects, projectionMatrix, viewMatrix);
 
     }
     
-    renderObject(gameObject, projectionMatrix)
+    renderObject(gameObject, projectionMatrix, viewMatrix)
     {
         const currMesh = gameObject.mesh;
 
@@ -247,38 +261,43 @@ export class renderer
 
         this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, currMesh.indexBufferID);
 
-        const modelViewMatrix = mat4.create();
+
+        const matModel = mat4.create();
 
 
         mat4.translate(
-            modelViewMatrix, 
-            modelViewMatrix, 
+            matModel, 
+            matModel, 
             gameObject.position,
         ); 
 
         mat4.rotate(
-            modelViewMatrix, 
-            modelViewMatrix, 
+            matModel, 
+            matModel, 
             gameObject.rotation[0], 
             [1,0,0],
         ); 
         mat4.rotate(
-            modelViewMatrix, 
-            modelViewMatrix, 
+            matModel, 
+            matModel, 
             gameObject.rotation[1], 
             [0,1,0],
         ); 
         mat4.rotate(
-            modelViewMatrix, 
-            modelViewMatrix, 
+            matModel, 
+            matModel, 
             gameObject.rotation[2], 
             [0,0,1],
         ); 
 
         mat4.scale( 
-            modelViewMatrix, 
-            modelViewMatrix, 
+            matModel, 
+            matModel, 
             gameObject.scale,);
+
+        const modelViewMatrix = mat4.create();
+
+        mat4.mul(modelViewMatrix, matModel, viewMatrix);
 
         this.gl.useProgram(this.shaderProgram);
 
@@ -293,7 +312,7 @@ export class renderer
             modelViewMatrix,
         );
         
-
+      
 
         {
             const vertexCount = currMesh.indices.length * 3;
@@ -307,6 +326,82 @@ export class renderer
         this.gl.disableVertexAttribArray(currMesh.texCoord_UL);
 
         return;
+    }
+
+    calculateScreenBoundaries(zPos)
+    {
+        
+        const fieldOfView = (45 * Math.PI) / 180; // in radians
+        const aspect = this.gl.canvas.clientWidth / this.gl.canvas.clientHeight;
+        const zNear = 0.1;
+        const zFar = 100.0;
+        const projectionMatrix = mat4.create();
+
+        mat4.perspective(projectionMatrix, fieldOfView, aspect, zNear, zFar);
+
+        const viewMatrix = mat4.create();
+        mat4.lookAt(viewMatrix, this.cameraPosition, this.cameraTarget, this.upDirection);
+
+        let matViewProj = mat4.create();
+        mat4.mul(matViewProj, viewMatrix, projectionMatrix);
+
+        let invMatViewProj = mat4.create();
+        mat4.invert(invMatViewProj, matViewProj);
+
+
+        const frustumCorners = [
+                    vec4.fromValues(-1, -1, -1, 1), vec4.fromValues(1, -1, -1, 1), vec4.fromValues(1, 1, -1, 1), vec4.fromValues(-1, 1, -1, 1),
+                    vec4.fromValues(-1, -1, 1, 1), vec4.fromValues(1, -1, 1, 1), vec4.fromValues(1, 1, 1, 1), vec4.fromValues(-1, 1, 1, 1)
+        ]
+
+        // convert frustum clip space corners to world space
+        let worldSpaceCorners = [];
+
+        for(let i = 0; i < frustumCorners.length; i++)
+        {
+            let worldCorner = vec4.create();
+
+            vec4.transformMat4(worldCorner, frustumCorners[i], invMatViewProj);
+
+            vec4.scale(worldCorner, worldCorner, zPos);
+
+            // if (worldCorner[3] !== 0) {
+            //     worldCorner[0] /= worldCorner[3];
+            //     worldCorner[1] /= worldCorner[3];
+            //     worldCorner[2] /= worldCorner[3];
+            // }
+
+            worldSpaceCorners.push(worldCorner);
+        }
+
+        
+
+        let upperBoundary = vec3.create();
+        let lowerBoundary = vec3.create();
+
+        upperBoundary[0] = Math.max(worldSpaceCorners[0][0], worldSpaceCorners[1][0], worldSpaceCorners[2][0], worldSpaceCorners[3][0], 
+            worldSpaceCorners[4][0], worldSpaceCorners[5][0],worldSpaceCorners[6][0],worldSpaceCorners[7][0]);
+
+        lowerBoundary[0] = Math.min(worldSpaceCorners[0][0], worldSpaceCorners[1][0], worldSpaceCorners[2][0], worldSpaceCorners[3][0], 
+            worldSpaceCorners[4][0], worldSpaceCorners[5][0],worldSpaceCorners[6][0],worldSpaceCorners[7][0]);        
+                                    
+        upperBoundary[1] = Math.max(worldSpaceCorners[0][1], worldSpaceCorners[1][1], worldSpaceCorners[2][1], worldSpaceCorners[3][1], 
+            worldSpaceCorners[4][1], worldSpaceCorners[5][1],worldSpaceCorners[6][1],worldSpaceCorners[7][1]);
+            
+        lowerBoundary[1] = Math.min(worldSpaceCorners[0][1], worldSpaceCorners[1][1], worldSpaceCorners[2][1], worldSpaceCorners[3][1], 
+            worldSpaceCorners[4][1], worldSpaceCorners[5][1],worldSpaceCorners[6][1],worldSpaceCorners[7][1]);    
+            
+            
+        upperBoundary[2] = Math.max(worldSpaceCorners[0][2], worldSpaceCorners[1][2], worldSpaceCorners[2][2], worldSpaceCorners[3][2], 
+            worldSpaceCorners[4][2], worldSpaceCorners[5][2],worldSpaceCorners[6][2],worldSpaceCorners[7][2]);
+            
+        lowerBoundary[2] = Math.min(worldSpaceCorners[0][2], worldSpaceCorners[1][2], worldSpaceCorners[2][2], worldSpaceCorners[3][2], 
+            worldSpaceCorners[4][2], worldSpaceCorners[5][2],worldSpaceCorners[6][2],worldSpaceCorners[7][2]);   
+
+        // just need x and y, storing them in vec4 (lowerX, lowerY, upperX, upperY)
+        let boundaries = vec4.fromValues(lowerBoundary[0], lowerBoundary[1], upperBoundary[0], upperBoundary[1]);
+        
+        return boundaries;
     }
 }
 
