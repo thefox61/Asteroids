@@ -1,4 +1,5 @@
 import {mesh} from "./mesh.js"
+import { physicsComponent } from "./physicsComponent.js";
 
 // static object, only for visual effect. No physics or collisions.
 export class staticGameObject
@@ -19,9 +20,9 @@ export class dynamicGameObject
 {
     mesh;
     
-    position;
-    rotation;
-    scale;
+    position = vec3.create();
+    rotation = vec3.create();
+    scale = vec3.fromValues(1.0, 1.0, 1.0);
 
     physics;
     collision;
@@ -29,7 +30,7 @@ export class dynamicGameObject
     constructor()
     {
         this.mesh = new mesh();
-        this.scale = vec3.create();
+        this.physics = new physicsComponent();
     }
 }
 

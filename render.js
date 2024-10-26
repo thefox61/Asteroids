@@ -1,6 +1,6 @@
 // render game objects
 import {mesh, vertex} from "./mesh.js"
-
+import { fsSource, vsSource } from "./shaders.js";
 export class renderer
 {
     shaderProgram;
@@ -21,7 +21,7 @@ export class renderer
         vec3.fromValues(this.upDirection, 0.0, 1.0, 0.0);
     }
 
-    initRender(vsShader, fsShader)
+    initRender()
     {
         const canvas = document.querySelector("#glcanvas");
 
@@ -29,10 +29,7 @@ export class renderer
         this.gl = canvas.getContext("webgl");
 
 
-        this.shaderProgram = this.createShaderProgram(vsShader, fsShader);
-
-
-         
+        this.shaderProgram = this.createShaderProgram(vsSource, fsSource);
     }
 
     createShaderProgram(vsShader, fsShader)
@@ -245,13 +242,18 @@ export class renderer
 
         mat4.lookAt(viewMatrix, this.cameraPosition, this.cameraTarget, this.upDirection);
 
-        this.renderObject(gameObjects, projectionMatrix, viewMatrix);
+        //this.renderObject(gameObjects, projectionMatrix, viewMatrix);
+        for(let i = 0; i < gameObjects.length; i++)
+        {
+            this.renderObject(gameObjects[i], projectionMatrix, viewMatrix);
+        }
 
     }
     
     renderObject(gameObject, projectionMatrix, viewMatrix)
     {
         const currMesh = gameObject.mesh;
+        console.log(gameObject);
 
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, currMesh.vertexBufferID);
 
@@ -313,7 +315,7 @@ export class renderer
         );
         
       
-
+       
         {
             const vertexCount = currMesh.indices.length * 3;
             const type = this.gl.UNSIGNED_SHORT;
