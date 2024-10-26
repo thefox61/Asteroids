@@ -144,6 +144,8 @@ export class renderer
     loadUniformLocations(mesh)
     {
         this.gl.useProgram(this.shaderProgram);
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER,  mesh.vertexBufferID);
+        
 
         console.log(this.shaderProgram);
        
@@ -168,6 +170,54 @@ export class renderer
         
 
         // vertex - pos, pos, pos, norm, norm, norm, tex, tex -- 4 bytes each
+        
+
+        this.gl.vertexAttribPointer(
+            mesh.position_UL,
+            3,
+            this.gl.FLOAT,
+            false,
+            32,
+            0,
+        );
+
+        // TODO -- do we need to enable these here?
+        this.gl.enableVertexAttribArray(mesh.position_UL);
+
+        this.gl.vertexAttribPointer(
+            mesh.normal_UL,
+            3,
+            this.gl.FLOAT,
+            false,
+            32,
+            12,
+        );
+
+        this.gl.enableVertexAttribArray(mesh.normal_UL);
+
+        this.gl.vertexAttribPointer(
+            mesh.texCoord_UL,
+            2,
+            this.gl.FLOAT,
+            false,
+            32,
+            24,
+        );
+
+        this.gl.enableVertexAttribArray(mesh.texCoord_UL);
+
+        this.gl.disableVertexAttribArray(mesh.position_UL);
+        this.gl.disableVertexAttribArray(mesh.normal_UL);
+        this.gl.disableVertexAttribArray(mesh.texCoord_UL);
+
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER,  mesh.vertexBufferID);
+
+        return;
+    }
+
+    setBuffers(mesh)
+    {
+        this.gl.useProgram(this.shaderProgram);
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER,  mesh.vertexBufferID);
 
         this.gl.vertexAttribPointer(
@@ -207,6 +257,8 @@ export class renderer
         this.gl.disableVertexAttribArray(mesh.position_UL);
         this.gl.disableVertexAttribArray(mesh.normal_UL);
         this.gl.disableVertexAttribArray(mesh.texCoord_UL);
+
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER,  mesh.vertexBufferID);
 
         return;
     }
@@ -252,8 +304,10 @@ export class renderer
     
     renderObject(gameObject, projectionMatrix, viewMatrix)
     {
+       
         const currMesh = gameObject.mesh;
-        console.log(gameObject);
+        this.setBuffers(currMesh);
+        //console.log(gameObject);
 
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, currMesh.vertexBufferID);
 

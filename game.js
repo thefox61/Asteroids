@@ -41,11 +41,15 @@ export class game
         this.render = new renderer();
         this.render.initRender();
 
+        
+
         this.render.loadMeshBuffers(this.playerMesh);
         this.render.loadUniformLocations(this.playerMesh);
 
-        // this.render.loadMeshBuffers(this.asteroidMesh);
-        // this.render.loadUniformLocations(this.asteroidMesh);
+        this.render.loadMeshBuffers(this.asteroidMesh);
+        this.render.loadUniformLocations(this.asteroidMesh);
+
+   
 
         // this just creates a reference, right?
         // I miss C++
@@ -56,15 +60,25 @@ export class game
         let boundaries = this.render.calculateScreenBoundaries(6.0);
 
         this.physics = new physics(boundaries);
-        
 
+        // test asteroid
+        let testAsteroid = new dynamicGameObject();
+        testAsteroid.mesh = this.asteroidMesh;
+        testAsteroid.position = vec3.fromValues(0.0, 0.0, -6.0);
+        testAsteroid.scale = vec3.fromValues(0.05, 0.05, 0.05);
+
+        this.gameObjects.push(testAsteroid);
+        
+        console.log(this.asteroidMesh);
+        console.log(this.playerMesh);
+        console.log(this.player.gameObject.mesh);
         this.runGame();
     }
 
     async loadMeshes()
     {
         this.playerMesh = await loadPLY("spaceship.ply");
-        // this.asteroidMesh = await loadPLY("PS1_style_low poly asteroids.ply");
+        this.asteroidMesh = await loadPLY("PS1_style_low poly asteroids.ply");
     }
 
     gameUpdate(now) {
