@@ -1,14 +1,12 @@
-import { dynamicGameObject } from "./gameObject.js";
-import { loadPLY } from "./plyLoader.js";
 
-export class player
+export class asteroid
 {
-    rotationSpeed = 0.2;
-    accelerationRate = 0.05;
-    meshName = "spaceship.ply";
+    meshName = "PS1_style_low poly asteroids.ply";
     gameObject;
 
-    numLives = 3;
+    asteroidType;
+
+    id = -1;
 
     contructor()
     {
@@ -16,5 +14,4 @@ export class player
         this.gameObject.scale = vec3.fromValues(0.05, 0.05, 0.05);
         this.gameObject.physics.dampening = vec3.fromValues(0.99, 0.99, 0.99);
     }
-
 }

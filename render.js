@@ -297,7 +297,11 @@ export class renderer
         //this.renderObject(gameObjects, projectionMatrix, viewMatrix);
         for(let i = 0; i < gameObjects.length; i++)
         {
-            this.renderObject(gameObjects[i], projectionMatrix, viewMatrix);
+            if(gameObjects[i].isActive)
+            {
+                this.renderObject(gameObjects[i], projectionMatrix, viewMatrix);
+            }
+            
         }
 
     }

@@ -27,6 +27,8 @@ export class dynamicGameObject
     physics;
     collision;
 
+    isActive = true;
+    
     constructor()
     {
         this.mesh = new mesh();
