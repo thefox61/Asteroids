@@ -3,6 +3,8 @@ import { loadPLY } from "./plyLoader.js";
 import { renderer } from "./render.js";
 import { physics } from "./physics.js";
 import { dynamicGameObject } from "./gameObject.js";
+import { spawner } from "./spawner.js";
+import { level } from "./level.js";
 
 // this seems questionable -- but working on figuring out the best solution
 // this. is undefined in game update due to how it's called
@@ -11,8 +13,13 @@ import { theGame } from "./main.js";
 export class game
 {
     gameState;
+
     player;
     spawnPosition;
+
+    levelParams;
+
+
     deltaTime = 0.0;
     prevFrame = 0.0;
     
@@ -21,6 +28,7 @@ export class game
 
     render;
     physics;
+    spawner;
 
     gameObjects = [];
 
@@ -61,35 +69,42 @@ export class game
 
         this.physics = new physics(boundaries);
 
-        // test asteroid
-        let testAsteroid = new dynamicGameObject();
-        testAsteroid.mesh = this.asteroidMesh;
-        testAsteroid.position = vec3.fromValues(0.0, 0.0, -6.0);
-        testAsteroid.scale = vec3.fromValues(0.05, 0.05, 0.05);
-        testAsteroid.physics.velocity = vec3.fromValues(0.5, 0.5, 0.0);
-        testAsteroid.physics.dampening = vec3.fromValues(1.0, 1.0, 1.0);
+        this.spawner = new spawner();
 
-        let testAsteroid2 = new dynamicGameObject();
-        testAsteroid2.mesh = this.asteroidMesh;
-        testAsteroid2.position = vec3.fromValues(-2.0, 1.0, -6.0);
-        testAsteroid2.scale = vec3.fromValues(0.05, 0.05, 0.05);
-        testAsteroid2.physics.velocity = vec3.fromValues(0.5, 0.0, 0.0);
-        testAsteroid2.physics.dampening = vec3.fromValues(1.0, 1.0, 1.0);
+        this.spawner.initSpawner();
 
-        let testAsteroid3 = new dynamicGameObject();
-        testAsteroid3.mesh = this.asteroidMesh;
-        testAsteroid3.position = vec3.fromValues(2.0, -1.0, -6.0);
-        testAsteroid3.scale = vec3.fromValues(0.05, 0.05, 0.05);
-        testAsteroid3.physics.velocity = vec3.fromValues(0.0, 0.5, 0.0);
-        testAsteroid3.physics.dampening = vec3.fromValues(1.0, 1.0, 1.0);
+        this.levelParams = new level();
+        this.levelParams.numAsteroids = 20;
+        this.levelParams.startingAsteroids = 10;    
 
-        this.gameObjects.push(testAsteroid);
-        this.gameObjects.push(testAsteroid2);
-        this.gameObjects.push(testAsteroid3);
-        
-        console.log(this.asteroidMesh);
-        console.log(this.playerMesh);
-        console.log(this.player.gameObject.mesh);
+        this.spawner.initLevel();
+
+        // // test asteroid
+        // let testAsteroid = new dynamicGameObject();
+        // testAsteroid.mesh = this.asteroidMesh;
+        // testAsteroid.position = vec3.fromValues(0.0, 0.0, -6.0);
+        // testAsteroid.scale = vec3.fromValues(0.05, 0.05, 0.05);
+        // testAsteroid.physics.velocity = vec3.fromValues(0.5, 0.5, 0.0);
+        // testAsteroid.physics.dampening = vec3.fromValues(1.0, 1.0, 1.0);
+
+        // let testAsteroid2 = new dynamicGameObject();
+        // testAsteroid2.mesh = this.asteroidMesh;
+        // testAsteroid2.position = vec3.fromValues(-2.0, 1.0, -6.0);
+        // testAsteroid2.scale = vec3.fromValues(0.05, 0.05, 0.05);
+        // testAsteroid2.physics.velocity = vec3.fromValues(0.5, 0.0, 0.0);
+        // testAsteroid2.physics.dampening = vec3.fromValues(1.0, 1.0, 1.0);
+
+        // let testAsteroid3 = new dynamicGameObject();
+        // testAsteroid3.mesh = this.asteroidMesh;
+        // testAsteroid3.position = vec3.fromValues(2.0, -1.0, -6.0);
+        // testAsteroid3.scale = vec3.fromValues(0.05, 0.05, 0.05);
+        // testAsteroid3.physics.velocity = vec3.fromValues(0.0, 0.5, 0.0);
+        // testAsteroid3.physics.dampening = vec3.fromValues(1.0, 1.0, 1.0);
+
+        // this.gameObjects.push(testAsteroid);
+        // this.gameObjects.push(testAsteroid2);
+        // this.gameObjects.push(testAsteroid3);
+
         this.runGame();
     }
 

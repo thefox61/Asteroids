@@ -2,17 +2,19 @@ import { dynamicGameObject } from "./gameObject.js";
 import { asteroid } from "./asteroid.js";
 import { theGame } from "./main.js";
 
-class objectPools
+export class objectPools
 {
     asteroids = [];
     freeAsteroids = [];
     numFreeAsteroids = 0;
 
-    activeShips = [];
+    ships = [];
     freeShips = [];
+    numFreeShips = 0;
 
-    activeBullets = [];
+    bullets = [];
     freeBullets = [];
+    numFreeBullets = 0;
 
     constructor()
     {
@@ -29,20 +31,52 @@ class objectPools
 
         for(let i = 0; i < asteroidsSize; i++)
         {
-            asteroids[i] = new asteroid();
+            this.asteroids[i] = new asteroid();
 
-            asteroids[i].type = "large";
+            this.asteroids[i].type = "large";
 
-            asteroids[i].gameObject = new dynamicGameObject();
+            this.asteroids[i].gameObject = new dynamicGameObject();
 
-            asteroids[i].gameObject.mesh = theGame.asteroidMesh;
-            
-            asteroids[i].gameObject.isActive = false;
+            this.asteroids[i].gameObject.mesh = theGame.asteroidMesh;
+       
+            this.asteroids[i].gameObject.isActive = true;
 
             this.freeAsteroids[i] = i;
 
-            asteroids[i].id = i;
+            this.asteroids[i].id = i;
         }
+
+        // this.numFreeShips = shipsSize;
+
+        // this.ships.length = shipsSize;
+        // this.freeShips.length = shipsSize;
+
+        // for(let i = 0; i < shipsSize; i++)
+        // {
+        //     this.ships[i] = new spaceship();
+
+        //     this.ships[i].type = "large";
+
+        //     this.ships[i].gameObject = new dynamicGameObject();
+
+        //     this.ships[i].gameObject.mesh = theGame.asteroidMesh;
+         
+        //     this.ships[i].gameObject.isActive = false;
+
+        //     this.freeShips[i] = i;
+
+        //     this.ships[i].id = i;
+        // }
+
+        // this.numFreeBullets = bulletsSize;
+
+        // this.bullets.length = bulletsSize;
+        // this.freeBullets.length = bulletsSize;
+
+        // for(let i = 0; i < bulletsSize; i++)
+        // {
+        //     this
+        // }
 
     }
 
@@ -55,13 +89,12 @@ class objectPools
 
         this.numFreeAsteroids--;
 
-        return this.freeAsteroids[this.numFreeAsteroids];
+        return this.asteroids[this.numFreeAsteroids];
     }
 
     returnAsteroid(theAsteroid)
     {
         this.freeAsteroids[this.numFreeAsteroids] = theAsteroid.id;
-
 
         this.numFreeAsteroids++;
     }

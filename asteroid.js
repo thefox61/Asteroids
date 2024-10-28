@@ -12,6 +12,6 @@ export class asteroid
     {
         //this.gameObject = new dynamicGameObject();
         this.gameObject.scale = vec3.fromValues(0.05, 0.05, 0.05);
-        this.gameObject.physics.dampening = vec3.fromValues(0.99, 0.99, 0.99);
+        this.gameObject.physics.dampening = vec3.fromValues(1.0, 1.0, 1.0);
     }
 }
