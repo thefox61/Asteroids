@@ -25,6 +25,7 @@ export class game
     
     playerMesh;
     asteroidMesh;
+    bulletMesh;
 
     render;
     physics;
@@ -41,6 +42,7 @@ export class game
     {
         this.player = new player();
         this.player.gameObject = new dynamicGameObject();
+        this.player.gameObject.type = "player";
         this.player.gameObject.position = vec3.fromValues(0.0, 0.0, -6.0);
         this.player.gameObject.scale = vec3.fromValues(0.05, 0.05, 0.05);
         this.player.gameObject.physics.dampening = vec3.fromValues(0.99, 0.99, 0.99);
@@ -57,11 +59,14 @@ export class game
         this.render.loadMeshBuffers(this.asteroidMesh);
         this.render.loadUniformLocations(this.asteroidMesh);
 
-   
+        this.render.loadMeshBuffers(this.bulletMesh);
+        this.render.loadUniformLocations(this.bulletMesh);
+
 
         // this just creates a reference, right?
         // I miss C++
         this.player.gameObject.mesh = this.playerMesh;
+
 
         this.gameObjects.push(this.player.gameObject);
 
@@ -74,36 +79,10 @@ export class game
         this.spawner.initSpawner();
 
         this.levelParams = new level();
-        this.levelParams.numAsteroids = 20;
-        this.levelParams.startingAsteroids = 10;    
+        this.levelParams.numAsteroids = 10;
+        this.levelParams.startingAsteroids = 5;    
 
         this.spawner.initLevel();
-
-        // // test asteroid
-        // let testAsteroid = new dynamicGameObject();
-        // testAsteroid.mesh = this.asteroidMesh;
-        // testAsteroid.position = vec3.fromValues(0.0, 0.0, -6.0);
-        // testAsteroid.scale = vec3.fromValues(0.05, 0.05, 0.05);
-        // testAsteroid.physics.velocity = vec3.fromValues(0.5, 0.5, 0.0);
-        // testAsteroid.physics.dampening = vec3.fromValues(1.0, 1.0, 1.0);
-
-        // let testAsteroid2 = new dynamicGameObject();
-        // testAsteroid2.mesh = this.asteroidMesh;
-        // testAsteroid2.position = vec3.fromValues(-2.0, 1.0, -6.0);
-        // testAsteroid2.scale = vec3.fromValues(0.05, 0.05, 0.05);
-        // testAsteroid2.physics.velocity = vec3.fromValues(0.5, 0.0, 0.0);
-        // testAsteroid2.physics.dampening = vec3.fromValues(1.0, 1.0, 1.0);
-
-        // let testAsteroid3 = new dynamicGameObject();
-        // testAsteroid3.mesh = this.asteroidMesh;
-        // testAsteroid3.position = vec3.fromValues(2.0, -1.0, -6.0);
-        // testAsteroid3.scale = vec3.fromValues(0.05, 0.05, 0.05);
-        // testAsteroid3.physics.velocity = vec3.fromValues(0.0, 0.5, 0.0);
-        // testAsteroid3.physics.dampening = vec3.fromValues(1.0, 1.0, 1.0);
-
-        // this.gameObjects.push(testAsteroid);
-        // this.gameObjects.push(testAsteroid2);
-        // this.gameObjects.push(testAsteroid3);
 
         this.runGame();
     }
@@ -112,6 +91,7 @@ export class game
     {
         this.playerMesh = await loadPLY("spaceship.ply");
         this.asteroidMesh = await loadPLY("PS1_style_low poly asteroids.ply");
+        this.bulletMesh = await loadPLY("bullet1.ply");
     }
 
     gameUpdate(now) {

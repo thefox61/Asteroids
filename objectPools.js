@@ -1,5 +1,6 @@
 import { dynamicGameObject } from "./gameObject.js";
 import { asteroid } from "./asteroid.js";
+import { bullet } from "./bullet.js"
 import { theGame } from "./main.js";
 
 export class objectPools
@@ -41,42 +42,34 @@ export class objectPools
        
             this.asteroids[i].gameObject.isActive = true;
 
+            this.asteroids[i].gameObject.type = "largeAsteroid";
+
             this.freeAsteroids[i] = i;
 
             this.asteroids[i].id = i;
         }
 
-        // this.numFreeShips = shipsSize;
+        this.numFreeBullets = bulletsSize;
 
-        // this.ships.length = shipsSize;
-        // this.freeShips.length = shipsSize;
+        this.bullets.length = bulletsSize;
+        this.freeBullets.length = bulletsSize;
 
-        // for(let i = 0; i < shipsSize; i++)
-        // {
-        //     this.ships[i] = new spaceship();
+        for(let i = 0; i < bulletsSize; i++)
+        {
+            this.bullets[i] = new bullet();
 
-        //     this.ships[i].type = "large";
+            this.bullets[i].gameObject = new dynamicGameObject();
 
-        //     this.ships[i].gameObject = new dynamicGameObject();
+            this.bullets[i].gameObject.mesh = theGame.bulletMesh;
 
-        //     this.ships[i].gameObject.mesh = theGame.asteroidMesh;
-         
-        //     this.ships[i].gameObject.isActive = false;
+            this.bullets[i].gameObject.isActive = true;
 
-        //     this.freeShips[i] = i;
+            this.bullets[i].gameObject.type = "playerBullet";
 
-        //     this.ships[i].id = i;
-        // }
+            this.freeBullets[i] = i;
 
-        // this.numFreeBullets = bulletsSize;
-
-        // this.bullets.length = bulletsSize;
-        // this.freeBullets.length = bulletsSize;
-
-        // for(let i = 0; i < bulletsSize; i++)
-        // {
-        //     this
-        // }
+            this.bullets[i].id = i;
+        }
 
     }
 
@@ -99,5 +92,23 @@ export class objectPools
         this.numFreeAsteroids++;
     }
 
+    getBullet()
+    {
+        if(this.numFreeBullets - 1 <= 0)
+        { 
+            return null;
+        }
+
+        this.numFreeBullets--;
+
+        return this.bullets[this.numFreeBullets];
+    }
+
+    returnBullet(theBullet)
+    {
+        this.freeBullets[this.numFreeBullets] = theBullet.id;
+
+        this.numFreeBullets++;
+    }
 
 }
