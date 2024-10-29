@@ -46,6 +46,8 @@ export class game
         this.player.gameObject.position = vec3.fromValues(0.0, 0.0, -6.0);
         this.player.gameObject.scale = vec3.fromValues(0.05, 0.05, 0.05);
         this.player.gameObject.physics.dampening = vec3.fromValues(0.99, 0.99, 0.99);
+        this.player.gameObject.physics.diameter = 0.12;
+
         await this.loadMeshes();
 
         this.render = new renderer();
@@ -102,6 +104,7 @@ export class game
         theGame.render.renderGameObjects(theGame.gameObjects);
         theGame.physics.updateMovement(theGame.gameObjects, theGame.deltaTime);
         theGame.physics.checkCollisions(theGame.gameObjects);
+        theGame.spawner.update(theGame.deltaTime);
         requestAnimationFrame(theGame.gameUpdate, theGame);
     }
 

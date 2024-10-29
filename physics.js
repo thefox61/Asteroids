@@ -1,13 +1,27 @@
+import { game } from "./game.js";
 import { dynamicGameObject } from "./gameObject.js"
 import { physicsComponent } from "./physicsComponent.js"
 
+export class collision
+{   
+    objectA;
+    objectB;
+
+}
+
 export class physics
 {
+
+    collisionsThisFrame = [];
+    numCollisionsThisFrame = 0;
+
+    maxCollisions = 100;
 
     boundaries;
     constructor(boundaries)
     {
         this.boundaries = boundaries;
+        this.collisionsThisFrame.length = this.maxCollisions;
     }
 
     updateMovement(gameObjects, deltaTime)
@@ -45,11 +59,63 @@ export class physics
 
     checkCollisions(gameObjects)
     {
+        this.numCollisionsThisFrame = 0;
+
         for(let i = 0; i < gameObjects.length; i++)
         {   
+            if(!gameObjects[i].isActive)
+            {
+                continue;
+            }
             this.isOutsideBoundaries(gameObjects[i]);
-            
         }
+
+        for(let i = 0; i < gameObjects.length; i++)
+        {
+            if(!gameObjects[i].isActive)
+            {
+                continue;
+            }
+
+            for(let j = i + 1; j < gameObjects.length; j++ )
+            {
+                if(!gameObjects[j].isActive)
+                {
+                    continue;
+                }
+
+                if(this.checkCollision(gameObjects[i], gameObjects[j]))
+                {
+                    console.log("Collision!", gameObjects[i].type, gameObjects[j].type);
+                    const thisCollision = new collision();
+
+                    thisCollision.objectA = i;
+                    thisCollision.objectB = j;
+
+                    if(this.numCollisionsThisFrame >= this.maxCollisions)
+                    {
+                        this.maxCollisions = this.maxCollisions * 2;
+                        this.collisionsThisFrame.length = this.maxCollisions;
+                    }
+
+                    this.collisionsThisFrame[this.numCollisionsThisFrame] = thisCollision;
+                    this.numCollisionsThisFrame++;
+                }
+            }
+        }
+
+    }
+
+    checkCollision(objectA, objectB)
+    {
+        let distance = vec3.distance(objectA.position, objectB.position);
+
+        if(distance <= (objectA.physics.diameter + objectB.physics.diameter))
+        {
+            return true;
+        }
+        
+        return false;
     }
 
     isOutsideBoundaries(gameObject)

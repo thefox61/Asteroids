@@ -6,6 +6,8 @@ export class physicsComponent
     lastPosition;
     dampening;
 
+    diameter;
+
     constructor()
     {
         this.velocity = vec3.create();

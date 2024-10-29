@@ -29,7 +29,7 @@ export class dynamicGameObject
 
     isActive = true;
 
-    objectType = "default";
+    type = "default";
 
     constructor()
     {
