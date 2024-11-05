@@ -44,6 +44,8 @@ export class objectPools
 
             this.asteroids[i].gameObject.type = "largeAsteroid";
 
+            this.asteroids[i].gameObject.index = i;
+
             this.freeAsteroids[i] = i;
 
             this.asteroids[i].id = i;
@@ -66,47 +68,55 @@ export class objectPools
 
             this.bullets[i].gameObject.type = "playerBullet";
 
+            this.bullets[i].gameObject.index = i;
+
             this.freeBullets[i] = i;
 
             this.bullets[i].id = i;
+
+            this.bullets[i].lifetime = 0.0;
         }
 
     }
 
     getAsteroid()
     {
-        if(this.numFreeAsteroids - 1 <= 0)
+        if(this.numFreeAsteroids - 1 < 0)
         { 
             return null;
         }
 
         this.numFreeAsteroids--;
 
-        return this.asteroids[this.numFreeAsteroids];
+        let asteroidIndex = this.freeAsteroids[this.numFreeAsteroids];
+
+        return this.asteroids[asteroidIndex];
     }
 
-    returnAsteroid(theAsteroid)
+    returnAsteroid(asteroidIndex)
     {
-        this.freeAsteroids[this.numFreeAsteroids] = theAsteroid.id;
-
+        this.freeAsteroids[this.numFreeAsteroids] = asteroidIndex;
+        
         this.numFreeAsteroids++;
     }
 
     getBullet()
     {
-        if(this.numFreeBullets - 1 <= 0)
+        if(this.numFreeBullets - 1 < 0)
         { 
             return null;
         }
 
         this.numFreeBullets--;
+        
+        let bulletIndex = this.freeBullets[this.numFreeBullets];
 
-        return this.bullets[this.numFreeBullets];
+        return this.bullets[bulletIndex];
     }
 
-    returnBullet(theBullet)
+    returnBullet(bulletIndex)
     {
-        this.freeBullets[this.numFreeBullets] = theBullet.id;
+        this.freeBullets[this.numFreeBullets] = bulletIndex;
 
         this.numFreeBullets++;
     }

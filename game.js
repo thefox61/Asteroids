@@ -7,7 +7,7 @@ import { spawner } from "./spawner.js";
 import { level } from "./level.js";
 
 // this seems questionable -- but working on figuring out the best solution
-// this. is undefined in game update due to how it's called
+// 'this.' is undefined in gameUpdate due to how it's called
 import { theGame } from "./main.js";
 
 export class game

@@ -10,6 +10,7 @@ export function handleKeyDown(event)
     
     switch (event.key) {
         case "w":
+        case "W":
             let direction = getPlayerDirection();
         
             vec3.scale(playerGameObject.physics.acceleration, vec3.fromValues(direction[0], direction[1], direction[2]), 0.05);
@@ -17,10 +18,12 @@ export function handleKeyDown(event)
 
             break;
         case "a":
-            playerGameObject.rotation[2] += 0.2;
+        case "A":
+            playerGameObject.rotation[2] += 0.3;
             break;
         case "d":
-            playerGameObject.rotation[2] -= 0.2;
+        case "D":
+            playerGameObject.rotation[2] -= 0.3;
             break;
         case " ":
             let position = vec3.create();

@@ -30,6 +30,7 @@ export class dynamicGameObject
     isActive = true;
 
     type = "default";
+    index = -1;
 
     constructor()
     {
