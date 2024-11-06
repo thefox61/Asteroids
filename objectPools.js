@@ -2,6 +2,7 @@ import { dynamicGameObject } from "./gameObject.js";
 import { asteroid } from "./asteroid.js";
 import { bullet } from "./bullet.js"
 import { theGame } from "./main.js";
+import { saucer } from "./saucer.js";
 
 export class objectPools
 {
@@ -9,9 +10,9 @@ export class objectPools
     freeAsteroids = [];
     numFreeAsteroids = 0;
 
-    ships = [];
-    freeShips = [];
-    numFreeShips = 0;
+    saucers = [];
+    freeSaucers = [];
+    numFreeSaucers = 0;
 
     bullets = [];
     freeBullets = [];
@@ -23,7 +24,7 @@ export class objectPools
 
     }
 
-    initPools(asteroidsSize, shipsSize, bulletsSize)
+    initPools(asteroidsSize, saucersSize, bulletsSize)
     {
         this.numFreeAsteroids = asteroidsSize;
 
@@ -77,6 +78,28 @@ export class objectPools
             this.bullets[i].lifetime = 0.0;
         }
 
+        this.numFreeSaucers = saucersSize;
+
+        this.saucers.length = saucersSize;
+        this.freeSaucers.length = saucersSize;
+
+        for(let i = 0; i < saucersSize; i++)
+        {
+            this.saucers[i] = new saucer();
+
+            this.saucers[i].gameObject = new dynamicGameObject();
+
+            this.saucers[i].gameObject.mesh = theGame.saucerMesh;
+
+            this.saucers[i].gameObject.isActive = true;
+
+            this.saucers[i].gameObject.type = "largeSaucer";
+
+            this.saucers[i].gameObject.index = i;
+
+            this.freeSaucers[i] = i;
+        }
+
     }
 
     getAsteroid()
@@ -119,6 +142,27 @@ export class objectPools
         this.freeBullets[this.numFreeBullets] = bulletIndex;
 
         this.numFreeBullets++;
+    }
+
+    getSaucer()
+    {
+        if(this.numFreeSaucers - 1 < 0)
+        { 
+            return null;
+        }
+
+        this.numFreeSaucers--;
+
+        let saucerIndex = this.freeSaucers[this.numFreeSaucers];
+
+        return this.saucers[saucerIndex];
+    }
+
+    returnSaucer(saucerIndex)
+    {
+        this.freeSaucers[this.numFreeSaucers] = saucerIndex;
+        
+        this.numFreeSaucers++;
     }
 
 }

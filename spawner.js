@@ -115,7 +115,6 @@ export class spawner
 
     handlePlayerAsteroidCollision(objectA, objectB)
     {
-        console.log("player asteroid handler called");
         let player = objectA.type === "player" ? objectA : objectB;
 
         let asteroid; 
@@ -134,7 +133,6 @@ export class spawner
 
     handleBulletAsteroidCollision(objectA, objectB)
     {
-        console.log("playerBullet asteroid handler called");
         let bullet = objectA.type === "playerBullet" ? objectA : objectB;
 
         let asteroid; 
@@ -169,7 +167,7 @@ export class spawner
         }
         else
         {
-            newAsteroid.gameObject.isActive = true;1
+            newAsteroid.gameObject.isActive = true;
         }
 
         
@@ -239,7 +237,49 @@ export class spawner
         this.objectPool.returnAsteroid(theAsteroid.index);
     }
 
-    spawnShip()
+    spawnSaucer(saucerType)
+    {
+        let newSaucer = this.objectPool.getSaucer();
+
+        if(newSaucer == null)
+        {
+            console.log("no saucers available to spawn");
+            return;
+        }
+
+
+        newSaucer.gameObject.position = getRandomLocation();
+ 
+        if(newSaucer.gameObject.isActive)
+        {
+            theGame.gameObjects.push(newSaucer.gameObject);
+        }
+        else
+        {
+            newSaucer.gameObject.isActive = true;
+        }
+
+        // TODO
+        let velocity = vec3.create();
+        vec3.scale(velocity, getRandomVelocity(), 0.1);
+        newSaucer.gameObject.scale = vec3.fromValues(0.05, 0.05, 0.05);
+        newSaucer.gameObject.physics.velocity = velocity;
+        newSaucer.gameObject.physics.dampening = vec3.fromValues(1.0, 1.0, 1.0);
+        newSaucer.gameObject.physics.diameter = 0.08;
+
+        switch(saucerType)
+        {
+            case "largeSaucer":
+
+                break;
+
+            case "smallSaucer":
+                break;
+        }
+
+    }
+
+    despawnSaucer()
     {
 
     }

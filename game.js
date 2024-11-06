@@ -26,6 +26,7 @@ export class game
     playerMesh;
     asteroidMesh;
     bulletMesh;
+    saucerMesh;
 
     render;
     physics;
