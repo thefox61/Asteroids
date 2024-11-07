@@ -92,3 +92,16 @@ export function getRandDirection()
     // TODO --  z depth needs to be stored somewhere
     return vec3.fromValues(randX, randY, 0.0);  
 }
+
+export function getDirectionTowardsPlayer(position)
+{
+    let direction = vec3.create();
+
+    let playerPos = theGame.player.gameObject.position;
+    
+    vec3.sub(direction, playerPos, position);
+
+    vec3.normalize(direction, direction);
+
+    return direction;
+}

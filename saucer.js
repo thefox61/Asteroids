@@ -1,7 +1,7 @@
 
 export class saucer
 {
-    fireRate;
+    fireRate = 0.0;
     accuracy;    
     movementSpeed;
 

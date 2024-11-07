@@ -5,6 +5,7 @@ import { physics } from "./physics.js";
 import { dynamicGameObject } from "./gameObject.js";
 import { spawner } from "./spawner.js";
 import { level } from "./level.js";
+import { updateSaucers } from "./saucerUpdate.js";
 
 // this seems questionable -- but working on figuring out the best solution
 // 'this.' is undefined in gameUpdate due to how it's called
@@ -65,6 +66,9 @@ export class game
         this.render.loadMeshBuffers(this.bulletMesh);
         this.render.loadUniformLocations(this.bulletMesh);
 
+        this.render.loadMeshBuffers(this.saucerMesh);
+        this.render.loadUniformLocations(this.saucerMesh);
+
 
         // this just creates a reference, right?
         // I miss C++
@@ -84,6 +88,7 @@ export class game
         this.levelParams = new level();
         this.levelParams.numAsteroids = 10;
         this.levelParams.startingAsteroids = 5;    
+        this.levelParams.numSaucers = 2;
 
         this.spawner.initLevel();
 
@@ -95,6 +100,7 @@ export class game
         this.playerMesh = await loadPLY("spaceship.ply");
         this.asteroidMesh = await loadPLY("PS1_style_low poly asteroids.ply");
         this.bulletMesh = await loadPLY("bullet1.ply");
+        this.saucerMesh = await loadPLY("saucer.ply");
     }
 
     gameUpdate(now) {
@@ -106,6 +112,7 @@ export class game
         theGame.physics.updateMovement(theGame.gameObjects, theGame.deltaTime);
         theGame.physics.checkCollisions(theGame.gameObjects);
         theGame.spawner.update(theGame.deltaTime);
+        updateSaucers(theGame.deltaTime);
         requestAnimationFrame(theGame.gameUpdate, theGame);
     }
 

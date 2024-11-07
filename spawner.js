@@ -26,12 +26,18 @@ export class spawner
         "largeAsteroid_player": this.handlePlayerAsteroidCollision,
         "mediumAsteroid_player": this.handlePlayerAsteroidCollision,
         "smallAsteroid_player": this.handlePlayerAsteroidCollision,
+
         "playerBullet_largeAsteroid": this.handleBulletAsteroidCollision,
         "playerBullet_mediumAsteroid": this.handleBulletAsteroidCollision,
         "playerBullet_smallAsteroid": this.handleBulletAsteroidCollision,
         "largeAsteroid_playerBullet": this.handleBulletAsteroidCollision,
         "mediumAsteroid_playerBullet": this.handleBulletAsteroidCollision,
-        "smallAsteroid_playerBullet": this.handleBulletAsteroidCollision
+        "smallAsteroid_playerBullet": this.handleBulletAsteroidCollision,
+
+        "playerBullet_largeSaucer": this.handleBulletSaucerCollision,
+        "playerBullet_smallSaucer": this.handleBulletSaucerCollision,
+        "largeSaucer_playerBullet": this.handleBulletSaucerCollision,
+        "smallSaucer_playerBullet": this.handleBulletSaucerCollision,
     };
 
 
@@ -44,7 +50,7 @@ export class spawner
     initSpawner()
     {
         this.objectPool = new objectPools();
-        this.objectPool.initPools(100, 0, 10);
+        this.objectPool.initPools(100, 4, 10);
     }
 
     update(deltaTime)
@@ -60,6 +66,11 @@ export class spawner
         for(let i = 0; i < levelParams.numAsteroids; i++)
         {
             this.spawnAsteroid();
+        }
+
+        for(let i = 0; i < levelParams.numSaucers; i++)
+        {
+            this.spawnSaucer();
         }
 
         // update spawns remaining
@@ -147,6 +158,23 @@ export class spawner
 
         theGame.spawner.despawnAsteroid(asteroid);
         theGame.spawner.despawnBullet(bullet);
+    }
+
+    handleBulletSaucerCollision(objectA, objectB)
+    {
+        let bullet = objectA.type === "playerBullet" ? objectA : objectB;
+
+        let saucer; 
+        if(objectA.type === "largeSaucer" || objectA.type === "smallSaucer" )
+        {
+            saucer = objectA;
+        }
+        else
+        {
+            saucer = objectB;
+        }   
+        theGame.spawner.despawnSaucer(saucer);
+        theGame.spawner.despawnBullet(bullet);                                                                                      
     }
 
     spawnAsteroid(asteroidType)
@@ -262,29 +290,41 @@ export class spawner
         // TODO
         let velocity = vec3.create();
         vec3.scale(velocity, getRandomVelocity(), 0.1);
-        newSaucer.gameObject.scale = vec3.fromValues(0.05, 0.05, 0.05);
+        
         newSaucer.gameObject.physics.velocity = velocity;
         newSaucer.gameObject.physics.dampening = vec3.fromValues(1.0, 1.0, 1.0);
-        newSaucer.gameObject.physics.diameter = 0.08;
 
+        newSaucer.fireRate = 3.0;
+        newSaucer.lastFired = 0.0;
+        
         switch(saucerType)
         {
             case "largeSaucer":
-
+                newSaucer.gameObject.scale = vec3.fromValues(0.07, 0.07, 0.07);
+                newSaucer.gameObject.physics.diameter = 0.4;
                 break;
 
             case "smallSaucer":
+                newSaucer.gameObject.scale = vec3.fromValues(0.04, 0.04, 0.04);
+                newSaucer.gameObject.physics.diameter = 0.2;
                 break;
+            default:
+                newSaucer.gameObject.scale = vec3.fromValues(0.07, 0.07, 0.07);
+                newSaucer.gameObject.physics.diameter = 0.4;
+                
         }
 
+        return newSaucer;
     }
 
-    despawnSaucer()
-    {
+    despawnSaucer(theSaucer)
+    {   
+        theSaucer.isActive = false;
 
+        this.objectPool.returnSaucer(theSaucer.index);
     }
 
-    spawnBullet(position, direction)
+    spawnBullet(position, direction, bulletType = "playerBullet")
     {
         let newBullet = this.objectPool.getBullet();
 
@@ -293,8 +333,23 @@ export class spawner
             console.log("no bullets available to spawn");
             return;
         }
+
+        switch(bulletType)
+        {
+            case "playerBullet":
+                newBullet.gameObject.type = "playerBullet";
+                newBullet.gameObject.physics.velocity = vec3.scale(direction, direction, 2.0);
+                break;
+            case "saucerBullet":
+                newBullet.gameObject.type = "saucerBullet";
+                newBullet.gameObject.physics.velocity = vec3.scale(direction, direction, 1.0);
+                break;
+            default:
+                newBullet.gameObject.type = "playerBullet";
+                newBullet.gameObject.physics.velocity = vec3.scale(direction, direction, 2.0);
+        }
         
-        newBullet.lifetime = 3.0;
+        newBullet.lifetime = 2.0;
 
         newBullet.gameObject.position = position;
 
@@ -308,7 +363,7 @@ export class spawner
         }
 
         newBullet.gameObject.scale = vec3.fromValues(0.03, 0.03, 0.03);
-        newBullet.gameObject.physics.velocity = vec3.scale(direction, direction, 2.0);
+        
         newBullet.gameObject.physics.dampening = vec3.fromValues(1.0, 1.0, 1.0);
         newBullet.gameObject.physics.diameter = 0.03;
     }
