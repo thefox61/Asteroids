@@ -35,6 +35,9 @@ export class game
 
     gameObjects = [];
 
+    isRunning = false;
+    isEnd = false;
+
     constructor()
     {
         this.spawnPosition = vec3.fromValues(0.0, 0.0, -6.0);
@@ -109,11 +112,21 @@ export class game
         theGame.prevFrame = now;
 
         theGame.render.renderGameObjects(theGame.gameObjects);
-        theGame.physics.updateMovement(theGame.gameObjects, theGame.deltaTime);
-        theGame.physics.checkCollisions(theGame.gameObjects);
-        theGame.spawner.update(theGame.deltaTime);
-        updateSaucers(theGame.deltaTime);
-        requestAnimationFrame(theGame.gameUpdate, theGame);
+        if(theGame.isRunning)
+        {
+            theGame.physics.updateMovement(theGame.gameObjects, theGame.deltaTime);
+            theGame.physics.checkCollisions(theGame.gameObjects);
+            theGame.spawner.update(theGame.deltaTime);
+            updateSaucers(theGame.deltaTime);
+        }
+
+        if(theGame.isEnd)
+        {
+            theGame.restartGame();
+        }
+          
+        requestAnimationFrame(theGame.gameUpdate, theGame);  
+        
     }
 
     runGame()
@@ -121,6 +134,24 @@ export class game
         requestAnimationFrame(theGame.gameUpdate);
     }
 
+    restartGame()
+    {
+        // move player back to center
+        this.player.gameObject.position = vec3.fromValues(0.0, 0.0, -6.0);
+        this.player.gameObject.physics.velocity = vec3.fromValues(0.0, 0.0, 0.0);
+        this.player.gameObject.physics.acceleration = vec3.fromValues(0.0, 0.0, 0.0);
+
+        // clear all gameObjects (objectPools can remain though?)
+        this.gameObjects.length = 0;
+        this.gameObjects.push(this.player.gameObject);
+
+        // reset score
+        this.isEnd = false;
+
+        this.spawner.initSpawner();
+        this.spawner.initLevel();
+
+    }
    
 
 

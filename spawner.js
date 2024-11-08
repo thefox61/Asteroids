@@ -38,6 +38,9 @@ export class spawner
         "playerBullet_smallSaucer": this.handleBulletSaucerCollision,
         "largeSaucer_playerBullet": this.handleBulletSaucerCollision,
         "smallSaucer_playerBullet": this.handleBulletSaucerCollision,
+
+        "saucerBullet_player": this.handleBulletSaucerCollision,
+        "player_saucerBullet": this.handleBulletSaucerCollision,
     };
 
 
@@ -140,6 +143,8 @@ export class spawner
 
         theGame.spawner.despawnAsteroid(asteroid);
 
+        theGame.isEnd = true;
+
     }
 
     handleBulletAsteroidCollision(objectA, objectB)
@@ -175,6 +180,16 @@ export class spawner
         }   
         theGame.spawner.despawnSaucer(saucer);
         theGame.spawner.despawnBullet(bullet);                                                                                      
+    }
+
+    handlePlayerSaucerBulletCollision(objectA, objectB)
+    {
+        let saucerBullet = objectA.type == "saucerBullet" ? objectA : objectB;
+        let player = objectA.type === "player" ? objectA : objectB;
+
+        theGame.spawner.despawnBullet(bullet); 
+        
+        theGame.isEnd = true;                 
     }
 
     spawnAsteroid(asteroidType)

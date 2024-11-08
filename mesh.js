@@ -27,6 +27,12 @@ export class mesh
     modelView_UL = -1;
     projection_UL = -1;
 
+    textureSampler_UL = -1;
+    bHasTexture_UL = -1;
+
+    bHasTexture = false;
+    texture;
+
     constructor(vertices, indices)
     {   
         this.vertices = vertices;

@@ -31,6 +31,9 @@ export function handleKeyDown(event)
             let bulletDirection = getPlayerDirection();
             theGame.spawner.spawnBullet(position, bulletDirection);
             break;
+        case "Escape":
+            theGame.isRunning = !(theGame.isRunning);
+            break; 
 
         default:
         console.log(event.key);

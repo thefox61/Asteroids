@@ -163,7 +163,14 @@ export class renderer
 
         mesh.projection_UL = this.gl.getUniformLocation(this.shaderProgram, "uProjectionMatrix");
         console.log(mesh.projection_UL);
+
+        mesh.textureSampler_UL = this.gl.getUniformLocation(this.shaderProgram, "uSampler");
+        console.log(mesh.textureSampler_UL);
+
+        mesh.bHasTexture_UL = this.gl.getUniformLocation(this.shaderProgram, "bHasTexture");
+        console.log(mesh.bHasTexture_UL);
         
+
         
         
         
@@ -371,9 +378,17 @@ export class renderer
             false,
             modelViewMatrix,
         );
+
+        if(currMesh.bHasTexture)
+        {
+            this.gl.uniform1i(currMesh.bHasTexture_UL, 1);
+        }
+        else
+        {
+            this.gl.uniform1i(currMesh.bHasTexture_UL, 0);
+        }
+            
         
-      
-       
         {
             const vertexCount = currMesh.indices.length * 3;
             const type = this.gl.UNSIGNED_SHORT;
