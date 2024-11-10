@@ -4,7 +4,7 @@ uniform mat4 uProjectionMatrix;
 
 attribute vec4 aVertexNormal;
 attribute vec4 aVertexPosition;
-attribute vec2 aVertexTexCoords;
+attribute vec4 aVertexTexCoords;
 
 varying highp vec2 vTextureCoord;
 
@@ -14,7 +14,7 @@ doesNOthing = doesNOthing * vec4(0.0, 0.0, 0.0, 0.0);
 
 
 gl_Position = uProjectionMatrix * uModelViewMatrix * aVertexPosition;
-vTextureCoord = aVertexTexCoords;
+vTextureCoord = aVertexTexCoords.xy;
 }`;
 
 
@@ -30,7 +30,13 @@ void main(void) {
   vec4 frag_colour;
   if(bHasTexture)
   {
+    highp vec2 fakeTexCoords = vec2(0.5, 0.5);
+
     frag_colour = texture2D(uSampler, vTextureCoord); 
+    //frag_colour.x = 1.0;
+
+    //frag_colour = texture2D(uSampler, fakeTexCoords); 
+    //frag_colour = vec4(vTextureCoord.x, vTextureCoord.y, 0.0, 1.0);  
   } 
   else
   {

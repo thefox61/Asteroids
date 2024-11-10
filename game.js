@@ -6,6 +6,7 @@ import { dynamicGameObject } from "./gameObject.js";
 import { spawner } from "./spawner.js";
 import { level } from "./level.js";
 import { updateSaucers } from "./saucerUpdate.js";
+import { textureManager } from "./textureManager.js";
 
 // this seems questionable -- but working on figuring out the best solution
 // 'this.' is undefined in gameUpdate due to how it's called
@@ -32,6 +33,7 @@ export class game
     render;
     physics;
     spawner;
+    texturer;
 
     gameObjects = [];
 
@@ -58,10 +60,12 @@ export class game
         this.render = new renderer();
         this.render.initRender();
 
-        
+        this.texturer = new textureManager();
 
         this.render.loadMeshBuffers(this.playerMesh);
         this.render.loadUniformLocations(this.playerMesh);
+
+        
 
         this.render.loadMeshBuffers(this.asteroidMesh);
         this.render.loadUniformLocations(this.asteroidMesh);
@@ -76,6 +80,13 @@ export class game
         // this just creates a reference, right?
         // I miss C++
         this.player.gameObject.mesh = this.playerMesh;
+
+        // TODO -- texture testing
+        let playerTexture = await this.texturer.loadTexture("./space_ship_test_color.png");
+
+
+        this.player.gameObject.mesh.texture = playerTexture;
+        this.player.gameObject.mesh.bHasTexture = true;
 
 
         this.gameObjects.push(this.player.gameObject);

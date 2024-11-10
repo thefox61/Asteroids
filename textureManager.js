@@ -1,4 +1,4 @@
-import { theGame } from "./main";
+import { theGame } from "./main.js";
 
 
 export class textureManager
@@ -17,45 +17,35 @@ export class textureManager
 
         let newTexture = gl.createTexture();
 
-        const level = 0;
+        //gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+        gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+
         const internalFormat = gl.RGBA;
-        const width = 1;
-        const height = 1;
-        const border = 0;
-        const srcFormat  = gl.RBGA;
+        const srcFormat  = gl.RGBA;
         const srcType = gl.UNSIGNED_BYTE;
-        const pixel = new Uint8Array([0,0,255,255]);
 
-
-        gl.texImage2D(
-            gl.TEXTURE_2D,
-            level, 
-            internalFormat,
-            width,
-            height,
-            border,
-            srcFormat,
-            srcType,
-            pixel
-        );
 
         const image = new Image();
+        const loadTextureSource = new Promise((resolve, reject) => {
+            image.onload = () => resolve(image);
+            image.onerror = () => reject(new Error("Failed to load texture image: ${textureSrc}"));
+        });
 
-        image.onload = () => {
-            gl.bindTexture(gl.TEXTURE_2D, texture);
-            gl.texImage2D(
-              gl.TEXTURE_2D,
-              level,
-              internalFormat,
-              srcFormat,
-              srcType,
-              image,
-            );
-        }
-        // WebGL1 has different requirements for power of 2 images
-        // vs. non power of 2 images so check if the image is a
-        // power of 2 in both dimensions.
-        if (isPowerOf2(image.width) && isPowerOf2(image.height)) 
+        image.src = textureSrc;
+
+        await loadTextureSource;
+        
+        gl.bindTexture(gl.TEXTURE_2D,  newTexture);
+        gl.texImage2D(
+            gl.TEXTURE_2D,
+            0,
+            internalFormat,
+            srcFormat,
+            srcType,
+            image
+        );
+        
+        if (this.isPowerOf2(image.width) && this.isPowerOf2(image.height)) 
         {
             // Yes, it's a power of 2. Generate mips.
             gl.generateMipmap(gl.TEXTURE_2D);
@@ -68,11 +58,6 @@ export class textureManager
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
         }
 
-        image.src = textureSrc;
-
-        // TODO -- move this?
-        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-        
         return newTexture;  
     }
 
@@ -86,7 +71,7 @@ export class textureManager
 
     bindTextureBuffer(texture)
     {
-        
+
     }
 
     isPowerOf2(value) 

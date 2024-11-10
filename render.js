@@ -28,6 +28,8 @@ export class renderer
         // Initialize the GL context
         this.gl = canvas.getContext("webgl");
 
+        let version = this.gl.getParameter(this.gl.VERSION);
+        console.log("WEBGL version: ", version);
 
         this.shaderProgram = this.createShaderProgram(vsSource, fsSource);
     }
@@ -382,6 +384,16 @@ export class renderer
         if(currMesh.bHasTexture)
         {
             this.gl.uniform1i(currMesh.bHasTexture_UL, 1);
+            // Tell WebGL we want to affect texture unit 0
+            //this.gl.activeTexture(this.gl.TEXTURE0);
+
+            //console.log("texture in render call: ", currMesh.texture);
+            // Bind the texture to texture unit 0
+            this.gl.bindTexture(this.gl.TEXTURE_2D, currMesh.texture);
+
+            // Tell the shader we bound the texture to texture unit 0
+            this.gl.uniform1i(currMesh.textureSampler_UL, 0);
+
         }
         else
         {
