@@ -278,6 +278,8 @@ export class spawner
         theAsteroid.isActive = false;
 
         this.objectPool.returnAsteroid(theAsteroid.index);
+
+        theGame.audio.playAudio("explosion");
     }
 
     spawnSaucer(saucerType)

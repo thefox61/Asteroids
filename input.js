@@ -30,6 +30,7 @@ export function handleKeyDown(event)
             vec3.copy(position, theGame.player.gameObject.position);
             let bulletDirection = getPlayerDirection();
             theGame.spawner.spawnBullet(position, bulletDirection);
+            theGame.audio.playAudio("shoot");
             break;
         case "Escape":
             theGame.isRunning = !(theGame.isRunning);

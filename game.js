@@ -10,6 +10,9 @@ import { textureManager } from "./textureManager.js";
 import { textRenderer } from "./textRendering.js";
 import { fontInfo, fontSource } from "./font.js";
 import { scoreSystem } from "./scoreSystem.js";
+import { audioSystem } from "./audioSystem.js";
+
+
 // this seems questionable -- but working on figuring out the best solution
 // 'this.' is undefined in gameUpdate due to how it's called
 import { theGame } from "./main.js";
@@ -38,6 +41,7 @@ export class game
     texturer;
     textRender;
     scorer;
+    audio;
 
     gameObjects = [];
 
@@ -108,6 +112,10 @@ export class game
         this.spawner = new spawner();
 
         this.spawner.initSpawner();
+
+        this.audio = new audioSystem();
+        this.audio.init();
+
 
         this.levelParams = new level();
         this.levelParams.numAsteroids = 10;
