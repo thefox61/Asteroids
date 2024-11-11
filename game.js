@@ -11,6 +11,7 @@ import { textRenderer } from "./textRendering.js";
 import { fontInfo, fontSource } from "./font.js";
 import { scoreSystem } from "./scoreSystem.js";
 import { audioSystem } from "./audioSystem.js";
+import { levelManager } from "./levelManager.js";
 
 
 // this seems questionable -- but working on figuring out the best solution
@@ -42,6 +43,7 @@ export class game
     textRender;
     scorer;
     audio;
+    levelSystem;
 
     gameObjects = [];
 
@@ -117,13 +119,15 @@ export class game
         this.audio.init();
 
 
-        this.levelParams = new level();
-        this.levelParams.numAsteroids = 10;
-        this.levelParams.startingAsteroids = 5;    
-        this.levelParams.numSaucers = 2;
-        this.levelParams.startingSaucers = 0;
-        this.levelParams.asteroidSpawnRate = 5.0;
-        this.levelParams.saucerSpawnRate = 10.0;
+        // this.levelParams = new level();
+        // this.levelParams.numAsteroids = 10;
+        // this.levelParams.startingAsteroids = 5;    
+        // this.levelParams.numSaucers = 2;
+        // this.levelParams.startingSaucers = 0;
+        // this.levelParams.asteroidSpawnRate = 5.0;
+        // this.levelParams.saucerSpawnRate = 10.0;
+        this.levelSystem = new levelManager();
+        this.levelSystem.init();
 
 
         this.spawner.initLevel();
@@ -151,6 +155,7 @@ export class game
             theGame.physics.checkCollisions(theGame.gameObjects);
             theGame.spawner.update(theGame.deltaTime);
             theGame.scorer.updateScore();
+            theGame.levelSystem.checkFinished();
             updateSaucers(theGame.deltaTime);
         }
 
@@ -186,9 +191,9 @@ export class game
         this.scorer.reset();
         this.audio.pauseAll();
 
+        this.levelSystem.reset();
         this.spawner.initSpawner();
         this.spawner.initLevel();
-
     }
    
 
