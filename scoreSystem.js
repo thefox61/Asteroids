@@ -97,7 +97,13 @@ export class scoreSystem
 
     reset()
     {
+        this.score = 0;
 
+        theGame.textRender.updateTextMesh(this.scoreGameObject.mesh, this.score.toString());
+
+        theGame.render.updateMeshBuffers(this.scoreGameObject.mesh);
+
+        theGame.gameObjects.push(this.scoreGameObject);
     }
 
 }

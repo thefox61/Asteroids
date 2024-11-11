@@ -155,6 +155,11 @@ export class textRenderer
         const newLength = text.length;
         const oldLength = numVertices / 6;
 
+        if(newLength < oldLength)
+        {
+            mesh.vertices.length = newLength * 6;
+            mesh.indices.length = newLength * 2;
+        }
 
         const maxX = this.fontInfo.width;
         const maxY = this.fontInfo.height;
