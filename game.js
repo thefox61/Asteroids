@@ -7,6 +7,8 @@ import { spawner } from "./spawner.js";
 import { level } from "./level.js";
 import { updateSaucers } from "./saucerUpdate.js";
 import { textureManager } from "./textureManager.js";
+import { textRenderer } from "./textRendering.js";
+import { fontInfo, fontSource } from "./font.js";
 
 // this seems questionable -- but working on figuring out the best solution
 // 'this.' is undefined in gameUpdate due to how it's called
@@ -34,6 +36,7 @@ export class game
     physics;
     spawner;
     texturer;
+    textRender;
 
     gameObjects = [];
 
@@ -83,13 +86,31 @@ export class game
 
         // TODO -- texture testing
         let playerTexture = await this.texturer.loadTexture("./space_ship_test_color.png");
-
-
         this.player.gameObject.mesh.texture = playerTexture;
         this.player.gameObject.mesh.bHasTexture = true;
 
-
+        
         this.gameObjects.push(this.player.gameObject);
+
+        // TODO font testing
+        this.textRender = new textRenderer();
+
+        await this.textRender.init(fontSource, fontInfo);
+
+        let ilyTextMesh = this.textRender.generateTextMesh("test text");
+
+        this.render.loadMeshBuffers(ilyTextMesh);
+        this.render.loadUniformLocations(ilyTextMesh);
+
+        let ilyGameObject = new dynamicGameObject();
+
+        ilyGameObject.mesh = ilyTextMesh;
+
+        ilyGameObject.position = vec3.fromValues(0.0, 0.0, -6.0);
+        ilyGameObject.scale = vec3.fromValues(0.02, 0.02, 0.02);
+        ilyGameObject.physics.dampening = vec3.fromValues(0.99, 0.99, 0.99);
+        this.gameObjects.push(ilyGameObject);
+
 
         let boundaries = this.render.calculateScreenBoundaries(6.0);
 
