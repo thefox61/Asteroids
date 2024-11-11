@@ -9,7 +9,7 @@ import { updateSaucers } from "./saucerUpdate.js";
 import { textureManager } from "./textureManager.js";
 import { textRenderer } from "./textRendering.js";
 import { fontInfo, fontSource } from "./font.js";
-
+import { scoreSystem } from "./scoreSystem.js";
 // this seems questionable -- but working on figuring out the best solution
 // 'this.' is undefined in gameUpdate due to how it's called
 import { theGame } from "./main.js";
@@ -37,6 +37,7 @@ export class game
     spawner;
     texturer;
     textRender;
+    scorer;
 
     gameObjects = [];
 
@@ -97,25 +98,29 @@ export class game
 
         await this.textRender.init(fontSource, fontInfo);
 
-        let ilyTextMesh = this.textRender.generateTextMesh("test text");
+        // let ilyTextMesh = this.textRender.generateTextMesh('Score: 110');
 
-        this.render.loadMeshBuffers(ilyTextMesh);
-        this.render.loadUniformLocations(ilyTextMesh);
+        // this.render.loadMeshBuffers(ilyTextMesh);
+        // this.render.loadUniformLocations(ilyTextMesh);
 
-        let ilyGameObject = new dynamicGameObject();
+        // let ilyGameObject = new dynamicGameObject();
 
-        ilyGameObject.mesh = ilyTextMesh;
+        // ilyGameObject.mesh = ilyTextMesh;
 
-        ilyGameObject.position = vec3.fromValues(0.0, 0.0, -6.0);
-        ilyGameObject.scale = vec3.fromValues(0.02, 0.02, 0.02);
-        ilyGameObject.physics.dampening = vec3.fromValues(0.99, 0.99, 0.99);
-        ilyGameObject.rotation = vec3.fromValues(3.14, 0.0, 0.0);
-        this.gameObjects.push(ilyGameObject);
+        // ilyGameObject.position = vec3.fromValues(0.0, 0.0, -6.0);
+        // ilyGameObject.scale = vec3.fromValues(0.02, 0.02, 0.02);
+        // ilyGameObject.physics.dampening = vec3.fromValues(0.99, 0.99, 0.99);
+        // ilyGameObject.rotation = vec3.fromValues(3.14, 0.0, 0.0);
+        // this.gameObjects.push(ilyGameObject);
 
+        
 
         let boundaries = this.render.calculateScreenBoundaries(6.0);
 
         this.physics = new physics(boundaries);
+
+        this.scorer = new scoreSystem();
+        this.scorer.init();
 
         this.spawner = new spawner();
 
@@ -150,6 +155,7 @@ export class game
             theGame.physics.updateMovement(theGame.gameObjects, theGame.deltaTime);
             theGame.physics.checkCollisions(theGame.gameObjects);
             theGame.spawner.update(theGame.deltaTime);
+            theGame.scorer.updateScore();
             updateSaucers(theGame.deltaTime);
         }
 

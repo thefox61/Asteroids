@@ -29,7 +29,7 @@ export class renderer
         this.gl = canvas.getContext("webgl");
 
         let version = this.gl.getParameter(this.gl.VERSION);
-        console.log("WEBGL version: ", version);
+        console.log("WEBGL version: ", version);                                                                                                                                                    
 
         this.shaderProgram = this.createShaderProgram(vsSource, fsSource);
     }
@@ -118,6 +118,57 @@ export class renderer
 
         
         mesh.indexBufferID = this.gl.createBuffer();
+
+        // convert index array into raw data
+        const indices = [];
+
+        for(let i = 0; i < numIndices; i++)
+        {
+            const currIndex = mesh.indices[i];
+
+           // indices.concat(currIndex[0], currIndex[1], currIndex[2]);
+           indices.push(currIndex[0]);
+           indices.push(currIndex[1]);
+           indices.push(currIndex[2]);
+        }
+        
+        this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, mesh.indexBufferID);
+
+        this.gl.bufferData(
+            this.gl.ELEMENT_ARRAY_BUFFER,
+            new Uint16Array(indices),
+            this.gl.STATIC_DRAW,
+        );
+        
+        return;
+    }
+
+    updateMeshBuffers(mesh)
+    {
+        this.gl.useProgram(this.shaderProgram);
+
+
+        const numVertices = mesh.vertices.length;
+        const numIndices = mesh.indices.length;
+
+        const vertices = [];
+
+        // convert vertex class array into raw data
+        for(let i = 0; i < numVertices; i++)
+        {
+            const currVertex = mesh.vertices[i]; 
+
+            vertices.push(currVertex.position[0], currVertex.position[1], currVertex.position[2], 
+                            currVertex.normals[0], currVertex.normals[1], currVertex.normals[2],
+                            currVertex.texCoords[0], currVertex.texCoords[1]);
+            
+        }
+
+        // bind vertex buffer and buffer the raw data
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER,  mesh.vertexBufferID);
+
+        this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(vertices), this.gl.STATIC_DRAW);
+
 
         // convert index array into raw data
         const indices = [];
