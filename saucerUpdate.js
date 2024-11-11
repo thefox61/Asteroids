@@ -20,7 +20,15 @@ export function updateSaucers(deltaTime)
 
         if(currSaucer.lastFired >= currSaucer.fireRate)
         {
-            shootSaucer(currSaucer);
+            if(currSaucer.gameObject.type == "smallSaucer")
+            {
+                shootSaucer(currSaucer, true);
+            }
+            else
+            {
+                shootSaucer(currSaucer);
+            }
+            
             currSaucer.lastFired = 0.0;
         }
 

@@ -121,6 +121,10 @@ export class game
         this.levelParams.numAsteroids = 10;
         this.levelParams.startingAsteroids = 5;    
         this.levelParams.numSaucers = 2;
+        this.levelParams.startingSaucers = 0;
+        this.levelParams.asteroidSpawnRate = 5.0;
+        this.levelParams.saucerSpawnRate = 10.0;
+
 
         this.spawner.initLevel();
 
@@ -166,6 +170,7 @@ export class game
 
     restartGame()
     {
+        
         // move player back to center
         this.player.gameObject.position = vec3.fromValues(0.0, 0.0, -6.0);
         this.player.gameObject.physics.velocity = vec3.fromValues(0.0, 0.0, 0.0);
@@ -179,6 +184,7 @@ export class game
         this.isEnd = false;
 
         this.scorer.reset();
+        this.audio.pauseAll();
 
         this.spawner.initSpawner();
         this.spawner.initLevel();
