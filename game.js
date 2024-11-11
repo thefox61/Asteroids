@@ -109,6 +109,7 @@ export class game
         ilyGameObject.position = vec3.fromValues(0.0, 0.0, -6.0);
         ilyGameObject.scale = vec3.fromValues(0.02, 0.02, 0.02);
         ilyGameObject.physics.dampening = vec3.fromValues(0.99, 0.99, 0.99);
+        ilyGameObject.rotation = vec3.fromValues(3.14, 0.0, 0.0);
         this.gameObjects.push(ilyGameObject);
 
 
