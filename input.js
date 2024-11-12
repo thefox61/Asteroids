@@ -19,13 +19,13 @@ export function handleKeyDown(event)
             break;
         case "a":
         case "A":
-            let targetRotation = vec3.fromValues(0.0, 0.0, playerGameObject.rotation[2] + 0.4);
+            let targetRotation = vec3.fromValues(0.0, 0.0, playerGameObject.rotation[2] + 1.0);
             vec3.lerp(playerGameObject.rotation,playerGameObject.rotation, targetRotation, 0.2);
             //playerGameObject.rotation[2] += 0.3;
             break;
         case "d":
         case "D":
-            let targetRotation1 = vec3.fromValues(0.0, 0.0, playerGameObject.rotation[2] - 0.4);
+            let targetRotation1 = vec3.fromValues(0.0, 0.0, playerGameObject.rotation[2] - 1.0);
             vec3.lerp(playerGameObject.rotation,playerGameObject.rotation, targetRotation1, 0.2);
             //playerGameObject.rotation[2] -= 0.3;
             break;
