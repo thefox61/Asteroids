@@ -91,7 +91,7 @@ export class spawner
 
         if(this.saucerSpawnsRemaining > 0 && this.lastSaucerSpawn >= theGame.levelParams.saucerSpawnRate)
         {
-            let randType = Math.random;
+            let randType = Math.random();
             if(randType > 0.3)
             {
                 this.spawnSaucer("smallSaucer");
@@ -127,7 +127,7 @@ export class spawner
 
         for(let i = 0; i < levelParams.startingSaucers; i++)
         {
-            let randType = Math.random;
+            let randType = Math.random();
             if(randType > 0.3)
             {
                 this.spawnSaucer("smallSaucer");

@@ -30,30 +30,23 @@ export class physics
         {
             let currPhysics = gameObjects[i].physics;
 
-            //currPhysics.acceleration = currPhysics.acceleration * currPhysics.dampening;
-            // vec3.mul( currPhysics.acceleration,  currPhysics.acceleration, currPhysics.dampening)
-
             let deltaVelocity = vec3.create();
             vec3.scale(deltaVelocity, currPhysics.acceleration, deltaTime);
-            //currPhysics.velocity = currPhysics.velocity * currPhysics.acceleration;
-            vec3.add( currPhysics.velocity,  currPhysics.velocity, currPhysics.acceleration)
 
-            //let deltaPosition = currPhysics.velocity * deltaTime;
+            vec3.add( currPhysics.velocity,  currPhysics.velocity, deltaVelocity)
+
             let deltaPosition = vec3.create();
             vec3.scale(deltaPosition, currPhysics.velocity, deltaTime);
 
-            
-            //gameObjects[i].position = gameObjects[i].position + deltaPosition;
             vec3.add(gameObjects[i].position, gameObjects[i].position, deltaPosition);
 
             let currDampening = vec3.create();
+
             vec3.scale(currDampening, currPhysics.dampening, deltaTime);
 
             vec3.mul( currPhysics.velocity,  currPhysics.velocity , currPhysics.dampening)
 
-            
 
-            //console.log(gameObjects[i].position);
         }
     }
 

@@ -1,4 +1,4 @@
-const fontSource = "./courierNewFontTexture.png";
+const fontSource = "./textures/courierNewFontTexture.png";
 
 const fontInfo = {
     "name": "Courier New",

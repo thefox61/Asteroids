@@ -1,6 +1,5 @@
 export class level
 {
-    // spawn numbers
     numAsteroids = 0;
     numSaucers = 0;
 

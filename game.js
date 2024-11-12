@@ -87,19 +87,15 @@ export class game
         this.render.loadUniformLocations(this.saucerMesh);
 
 
-        // this just creates a reference, right?
-        // I miss C++
         this.player.gameObject.mesh = this.playerMesh;
 
-        // TODO -- texture testing
-        let playerTexture = await this.texturer.loadTexture("./space_ship_test_color.png");
+        let playerTexture = await this.texturer.loadTexture("./textures/space_ship_test_color.png");
         this.player.gameObject.mesh.texture = playerTexture;
         this.player.gameObject.mesh.bHasTexture = true;
 
         
         this.gameObjects.push(this.player.gameObject);
 
-        // TODO font testing
         this.textRender = new textRenderer();
 
         await this.textRender.init(fontSource, fontInfo);
@@ -118,14 +114,6 @@ export class game
         this.audio = new audioSystem();
         this.audio.init();
 
-
-        // this.levelParams = new level();
-        // this.levelParams.numAsteroids = 10;
-        // this.levelParams.startingAsteroids = 5;    
-        // this.levelParams.numSaucers = 2;
-        // this.levelParams.startingSaucers = 0;
-        // this.levelParams.asteroidSpawnRate = 5.0;
-        // this.levelParams.saucerSpawnRate = 10.0;
         this.levelSystem = new levelManager();
         this.levelSystem.init();
 
@@ -137,10 +125,10 @@ export class game
 
     async loadMeshes()
     {
-        this.playerMesh = await loadPLY("spaceship.ply");
-        this.asteroidMesh = await loadPLY("PS1_style_low poly asteroids.ply");
-        this.bulletMesh = await loadPLY("bullet1.ply");
-        this.saucerMesh = await loadPLY("saucer.ply");
+        this.playerMesh = await loadPLY("./models/spaceship.ply");
+        this.asteroidMesh = await loadPLY("./models/PS1_style_low poly asteroids.ply");
+        this.bulletMesh = await loadPLY("./models/bullet1.ply");
+        this.saucerMesh = await loadPLY("./models/saucer.ply");
     }
 
     gameUpdate(now) {

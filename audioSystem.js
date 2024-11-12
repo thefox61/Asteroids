@@ -4,9 +4,9 @@ export class audioSystem
 {
     soundFiles = 
     {
-        "shoot": "./laser.wav",
-        "explosion": "./explosion.wav",
-        "alarm": "./alarm.wav"
+        "shoot": "./audio/laser.wav",
+        "explosion": "./audio/explosion.wav",
+        "alarm": "./audio/alarm.wav"
 
     }
 

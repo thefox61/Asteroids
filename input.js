@@ -13,7 +13,7 @@ export function handleKeyDown(event)
         case "W":
             let direction = getPlayerDirection();
         
-            vec3.scale(playerGameObject.physics.acceleration, vec3.fromValues(direction[0], direction[1], direction[2]), 0.05);
+            vec3.scale(playerGameObject.physics.acceleration, vec3.fromValues(direction[0], direction[1], direction[2]), 5.0);
             console.log(direction);
 
             break;
