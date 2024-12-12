@@ -40,11 +40,19 @@ export class physics
 
             vec3.add(gameObjects[i].position, gameObjects[i].position, deltaPosition);
 
-            let currDampening = vec3.create();
+            
+            let dampeningValue = 1.0 - currPhysics.dampening[0];
+            dampeningValue = dampeningValue * deltaTime;
 
-            vec3.scale(currDampening, currPhysics.dampening, deltaTime);
+            let currDampening = vec3.fromValues(dampeningValue, dampeningValue, dampeningValue);
 
-            vec3.mul( currPhysics.velocity,  currPhysics.velocity , currPhysics.dampening)
+            vec3.mul(currDampening, currPhysics.velocity, currDampening);
+
+            //vec3.scale(currDampening, currPhysics.dampening, deltaTime);
+
+            //vec3.mul( currPhysics.velocity,  currPhysics.velocity , currPhysics.dampening)
+            
+            vec3.sub(currPhysics.velocity, currPhysics.velocity, currDampening);
 
 
         }
